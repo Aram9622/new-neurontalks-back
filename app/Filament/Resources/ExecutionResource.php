@@ -36,7 +36,7 @@ class ExecutionResource extends Resource
                             ->placeholder('#000000'),
 
                         Forms\Components\TextInput::make('slug')
-                            ->disabled()
+                            ->disabled(fn (string $operation) => $operation === 'edit')
                             ->dehydrated()
                             ->required()
                             ->unique(Execution::class, 'slug', ignoreRecord: true),

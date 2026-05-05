@@ -31,7 +31,7 @@ class ConferenceResource extends Resource
                                     ->afterStateUpdated(fn (string $operation, $state, Forms\Set $set) => 
                                         $operation === 'create' ? $set('slug', Str::slug($state)) : null),
                                 Forms\Components\TextInput::make('slug')
-                                    ->disabled()
+                                    ->disabled(fn (string $operation) => $operation === 'edit')
                                     ->dehydrated()
                                     ->required()
                                     ->unique(ignoreRecord: true),

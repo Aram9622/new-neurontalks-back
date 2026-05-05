@@ -28,7 +28,7 @@ class ProjectResource extends Resource
                         $operation === 'create' ? $set('slug', Str::slug($state)) : null),
 
                 Forms\Components\TextInput::make('slug')
-                    ->disabled()
+                    ->disabled(fn (string $operation) => $operation === 'edit')
                     ->dehydrated()
                     ->required()
                     ->unique(Project::class, 'slug', ignoreRecord: true),
