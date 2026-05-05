@@ -33,6 +33,20 @@ class ProjectResource extends Resource
                     ->required()
                     ->unique(Project::class, 'slug', ignoreRecord: true),
 
+                Forms\Components\Select::make('category')
+                    ->options([
+                        'web' => 'Web Development',
+                        'mobile' => 'Mobile App',
+                        'design' => 'UI/UX Design',
+                        'marketing' => 'Marketing',
+                    ])
+                    ->searchable()
+                    ->createOptionForm([
+                        Forms\Components\TextInput::make('category')
+                            ->required(),
+                    ])
+                    ->label('Category'),
+
                 Forms\Components\FileUpload::make('image')
                     ->label('Main Image')
                     ->image()
@@ -66,6 +80,8 @@ class ProjectResource extends Resource
                 Tables\Columns\ImageColumn::make('image'),
                 Tables\Columns\TextColumn::make('title')
                     ->searchable(),
+                Tables\Columns\TextColumn::make('category')
+                    ->badge(),
                 Tables\Columns\TextColumn::make('slug'),
                 Tables\Columns\TextColumn::make('technologies.name') // Показываем список технологий через запятую
                     ->badge()
@@ -75,7 +91,13 @@ class ProjectResource extends Resource
                     ->sortable(),
             ])
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('category')
+                    ->options([
+                        'web' => 'Web Development',
+                        'mobile' => 'Mobile App',
+                        'design' => 'UI/UX Design',
+                        'marketing' => 'Marketing',
+                    ]),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
