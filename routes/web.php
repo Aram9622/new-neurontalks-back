@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Artisan;
 
+use App\Http\Controllers\SitemapController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -17,6 +19,8 @@ use Illuminate\Support\Facades\Artisan;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/sitemap.xml', [SitemapController::class, 'index']);
 
 Route::get('/linkstorage', function () {
     Artisan::call('storage:link');
