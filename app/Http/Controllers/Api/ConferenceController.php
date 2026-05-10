@@ -12,9 +12,9 @@ class ConferenceController extends Controller
     public function index()
     {
         $conferences = Conference::latest()->paginate(10);
-        
+
         $conferences->getCollection()->transform(function($conf) {
-            $conf->main_image = $conf->main_image ? asset('storage/' . $conf->main_image) : null;
+            $conf->main_image = $conf->main_image ? asset('/public/storage/' . $conf->main_image) : null;
             return $conf;
         });
 
@@ -29,20 +29,20 @@ class ConferenceController extends Controller
             ->firstOrFail();
 
         // Преобразуем изображения в полные URL
-        $conference->main_image = $conference->main_image ? asset('storage/' . $conference->main_image) : null;
+        $conference->main_image = $conference->main_image ? asset('/public/storage/' . $conference->main_image) : null;
 
         $conference->speakers->transform(function($speaker) {
-            $speaker->image = $speaker->image ? asset('storage/' . $speaker->image) : null;
+            $speaker->image = $speaker->image ? asset('/public/storage/' . $speaker->image) : null;
             return $speaker;
         });
 
         $conference->sections->transform(function($section) {
-            $section->image = $section->image ? asset('storage/' . $section->image) : null;
+            $section->image = $section->image ? asset('/public/storage/' . $section->image) : null;
             return $section;
         });
 
         $conference->partners->transform(function($partner) {
-            $partner->logo = $partner->logo ? asset('storage/' . $partner->logo) : null;
+            $partner->logo = $partner->logo ? asset('/public/storage/' . $partner->logo) : null;
             return $partner;
         });
 

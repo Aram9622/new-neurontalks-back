@@ -15,7 +15,7 @@ class ServiceController extends Controller
 
         // Map full image URLs
         $services->getCollection()->transform(function ($service) {
-            $service->image = $service->image ? asset('storage/' . $service->image) : null;
+            $service->image = $service->image ? asset('/public/storage/' . $service->image) : null;
             return $service;
         });
 
@@ -27,7 +27,7 @@ class ServiceController extends Controller
     {
         $service = Service::where('slug', $slug)->firstOrFail();
 
-        $service->image = $service->image ? asset('storage/' . $service->image) : null;
+        $service->image = $service->image ? asset('/public/storage/' . $service->image) : null;
 
         return response()->json($service);
     }

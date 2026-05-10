@@ -39,7 +39,7 @@ class HomeController extends Controller
                     $relatedData = Blog::inRandomOrder()->limit(4)->get();
                     break;
                 case 'Partner':
-                    $relatedData = Partner::inRandomOrder()->limit(4)->get();
+                    $relatedData = Partner::query()->get();
                     break;
                 case 'Conference':
                     $relatedData = Conference::inRandomOrder()->limit(4)->get();
@@ -55,10 +55,10 @@ class HomeController extends Controller
             if ($relatedData && ($relatedData instanceof \Illuminate\Support\Collection)) {
                 $relatedData = $relatedData->map(function($item) {
                     if (isset($item->image)) {
-                        $item->image = $item->image ? asset('storage/' . $item->image) : null;
+                        $item->image = $item->image ? asset('/public/storage/' . $item->image) : null;
                     }
                     if (isset($item->logo)) {
-                        $item->logo = $item->logo ? asset('storage/' . $item->logo) : null;
+                        $item->logo = $item->logo ? asset('/public/storage/' . $item->logo) : null;
                     }
                     return $item;
                 });
@@ -69,7 +69,7 @@ class HomeController extends Controller
                     'title' => $section->title,
                     'subtitle' => $section->subtitle,
                     'description' => $section->description,
-                    'image' => $section->image ? asset('storage/' . $section->image) : null,
+                    'image' => $section->image ? asset('public/storage/' . $section->image) : null,
                     'button_title' => $section->button_title,
                     'button_link' => $section->button_link,
                     'model_type' => $section->model_type,

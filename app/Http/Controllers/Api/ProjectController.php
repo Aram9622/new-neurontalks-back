@@ -15,12 +15,12 @@ class ProjectController extends Controller
 
         // Преобразуем изображения в полные URL
         $projects->getCollection()->transform(function ($project) {
-            $project->image = $project->image ? asset('storage/' . $project->image) : null;
-            
+            $project->image = $project->image ? asset('/public/storage/' . $project->image) : null;
+
             // Преобразуем галерею в массив полных URL
             if ($project->gallery) {
                 $project->gallery = array_map(function($path) {
-                    return asset('storage/' . $path);
+                    return asset('/public/storage/' . $path);
                 }, $project->gallery);
             }
 
@@ -35,12 +35,12 @@ class ProjectController extends Controller
     {
         $project = Project::with('technologies')->where('slug', $slug)->firstOrFail();
 
-        $project->image = $project->image ? asset('storage/' . $project->image) : null;
-        
+        $project->image = $project->image ? asset('/public/storage/' . $project->image) : null;
+
         // Преобразуем галерею в массив полных URL
         if ($project->gallery) {
             $project->gallery = array_map(function($path) {
-                return asset('storage/' . $path);
+                return asset('/public/storage/' . $path);
             }, $project->gallery);
         }
 
