@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\SettingController;
 use App\Http\Controllers\Api\ConferenceController;
 use App\Http\Controllers\Api\ContactController;
 use App\Http\Controllers\Api\DatabaseController;
+use App\Http\Controllers\Api\NewsletterSubscriptionController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -43,6 +44,9 @@ Route::get('/conferences/{slug}', [ConferenceController::class, 'show']);
 
 // Contact Form API
 Route::post('/contact', [ContactController::class, 'store']); // Новый маршрут
+
+// Newsletter API
+Route::post('/subscribe', [NewsletterSubscriptionController::class, 'store']);
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
