@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\MailTemplateResource\Pages;
+use App\Forms\Components\MailTemplateEditor;
 use App\Models\MailTemplate;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -26,8 +27,11 @@ class MailTemplateResource extends Resource
             ])->default(MailTemplate::TYPE_NEWSLETTER)->required(),
             Forms\Components\TextInput::make('subject')->required()
                 ->helperText('Available placeholder: [[month]]'),
-            Forms\Components\RichEditor::make('body')->required()->columnSpanFull()
-                ->helperText('Available placeholders: [[month]] and [[posts]]'),
+            MailTemplateEditor::make('body')
+                ->label('Body')
+                ->required()
+                ->columnSpanFull()
+                ->helperText('Build the email visually, edit its HTML, or start from the ready-made layout. Available placeholder: [[month]].'),
             Forms\Components\Toggle::make('is_default')->label('Default for this mail type')
                 ->helperText('Used when a subscriber has no template attached.'),
         ])->columns(2);
