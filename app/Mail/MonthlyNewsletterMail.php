@@ -7,7 +7,6 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Str;
 
 class MonthlyNewsletterMail extends Mailable
 {
@@ -39,12 +38,6 @@ class MonthlyNewsletterMail extends Mailable
 
     private function replacePlaceholders(string $value): string
     {
-        $posts = $this->posts->map(fn ($post) => sprintf(
-            '<article><h2>%s</h2><p>%s</p><p><a href="%s">Read more</a></p></article>',
-            e($post->title), e(Str::limit(strip_tags($post->content ?? ''), 200)),
-            e(url('/blogs/'.$post->slug))
-        ))->implode('');
-
-        return str_replace(['[[month]]', '[[posts]]'], [e($this->month), $posts], $value);
+        return str_replace('[[month]]', e($this->month), $value);
     }
 }
