@@ -7,6 +7,7 @@ use App\Models\Blog;
 use App\Models\NewsletterSubscription;
 use Carbon\CarbonImmutable;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 
 class SendMonthlyNewsletter extends Command
@@ -41,10 +42,35 @@ class SendMonthlyNewsletter extends Command
         $sent = 0;
         NewsletterSubscription::query()->orderBy('id')->chunkById(100, function ($subscriptions) use ($posts, $month, &$sent) {
             foreach ($subscriptions as $subscription) {
+                $delivery = [
+                    'newsletter_subscription_id' => $subscription->id,
+                    'newsletter_month' => $month->toDateString(),
+                ];
+                $claimed = DB::table('monthly_newsletter_deliveries')->insertOrIgnore([
+                    ...$delivery,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+
+                if ($claimed === 0) {
+                    continue;
+                }
+
                 // Send immediately: the deployment does not run a queue worker.
-                Mail::to($subscription->email)->send(
-                    new MonthlyNewsletterMail($posts, $month->format('F Y'))
-                );
+                try {
+                    Mail::to($subscription->email)->send(
+                        new MonthlyNewsletterMail($posts, $month->format('F Y'))
+                    );
+                } catch (\Throwable $exception) {
+                    // Release only this failed claim so a later command run can retry it.
+                    DB::table('monthly_newsletter_deliveries')->where($delivery)->delete();
+
+                    throw $exception;
+                }
+
+                DB::table('monthly_newsletter_deliveries')
+                    ->where($delivery)
+                    ->update(['completed_at' => now(), 'updated_at' => now()]);
                 $subscription->update(['last_sent_at' => now()]);
                 $sent++;
             }

@@ -40,6 +40,10 @@ php artisan newsletter:send
 php artisan newsletter:send --month=2026-07
 ```
 
+Each subscription is claimed once per newsletter month before its message is
+sent. Re-running the command skips completed or already-claimed deliveries,
+while a delivery whose mail send fails is released so a later run can retry it.
+
 The deployment must configure the SMTP variables in `.env` and run the database
 migrations before accepting subscriptions:
 
