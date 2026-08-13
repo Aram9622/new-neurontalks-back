@@ -1,5 +1,4 @@
 @php
-    $id = $getId();
     $statePath = $getStatePath();
 @endphp
 
@@ -47,7 +46,7 @@
             },
             addImage() {
                 const url = window.prompt('Enter the image URL (https://...)')
-                if (url) this.insert(`<img src=&quot;${url.replace(/&/g, '&amp;').replace(/\"/g, '&quot;')}&quot; alt=&quot;&quot; style=&quot;max-width:100%;height:auto;&quot;>`)
+                if (url) this.insert(`<img src=&quot;${url.replace(/&/g, '&amp;').replaceAll(String.fromCharCode(34), '&quot;')}&quot; alt=&quot;&quot; style=&quot;max-width:100%;height:auto;&quot;>`)
             },
             addButton() {
                 const label = window.prompt('Button text', 'Read more')
