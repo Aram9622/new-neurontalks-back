@@ -21,6 +21,32 @@ Laravel is a web application framework with expressive, elegant syntax. We belie
 
 Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
+## Newsletter scheduler
+
+The monthly newsletter is sent synchronously by an Artisan command and does not
+require a queue worker. Add the following entry to the server crontab, replacing
+`/path/to/project` with the absolute path to this application:
+
+```cron
+* * * * * cd /path/to/project && php artisan schedule:run >> /dev/null 2>&1
+```
+
+Laravel runs `newsletter:send` on the first day of every month at 09:00. The
+command sends posts created during the previous month. It can also be started
+manually, optionally selecting a month:
+
+```bash
+php artisan newsletter:send
+php artisan newsletter:send --month=2026-07
+```
+
+The deployment must configure the SMTP variables in `.env` and run the database
+migrations before accepting subscriptions:
+
+```bash
+php artisan migrate --force
+```
+
 ## Learning Laravel
 
 Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
