@@ -15,7 +15,10 @@ return new class extends Migration
             $table->timestamp('completed_at')->nullable();
             $table->timestamps();
 
-            $table->unique(['newsletter_subscription_id', 'newsletter_month']);
+            $table->unique(
+                ['newsletter_subscription_id', 'newsletter_month'],
+                'newsletter_subscription_month_unique'
+            );
         });
     }
 
