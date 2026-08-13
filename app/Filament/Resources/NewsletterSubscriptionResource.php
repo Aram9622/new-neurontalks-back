@@ -16,6 +16,8 @@ class NewsletterSubscriptionResource extends Resource
 
     protected static ?string $navigationLabel = 'Subscribers';
 
+    protected static ?string $navigationGroup = 'Customers';
+
     protected static ?string $modelLabel = 'subscriber';
 
     protected static ?string $pluralModelLabel = 'Subscribers';
