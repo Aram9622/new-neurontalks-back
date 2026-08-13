@@ -33,7 +33,7 @@ class HomeController extends Controller
                     $relatedData = Project::inRandomOrder()->limit(4)->get();
                     break;
                 case 'Service':
-                    $relatedData = Service::inRandomOrder()->limit(4)->get();
+                    $relatedData = Service::query()->limit(4)->get();
                     break;
                 case 'Blog':
                     $relatedData = Blog::inRandomOrder()->limit(4)->get();
@@ -45,7 +45,7 @@ class HomeController extends Controller
                     $relatedData = Conference::inRandomOrder()->limit(4)->get();
                     break;
                 case 'Execution':
-                    $relatedData = Execution::inRandomOrder()->limit(4)->get();
+                    $relatedData = Execution::query()->limit(4)->get();
                     break;
                 default:
                     $relatedData = null;
