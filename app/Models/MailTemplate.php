@@ -1,0 +1,36 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+
+class MailTemplate extends Model
+{
+    public const TYPE_NEWSLETTER = 'newsletter';
+
+    protected $fillable = ['name', 'type', 'subject', 'body', 'is_default'];
+
+    protected $casts = ['is_default' => 'boolean'];
+
+    protected static function booted(): void
+    {
+        static::saving(function (self $template): void {
+            if ($template->is_default) {
+                static::query()->where('type', $template->type)
+                    ->when($template->exists, fn ($query) => $query->whereKeyNot($template->getKey()))
+                    ->update(['is_default' => false]);
+            }
+        });
+    }
+
+    public function subscriptions(): HasMany
+    {
+        return $this->hasMany(NewsletterSubscription::class);
+    }
+
+    public static function newsletterDefault(): ?self
+    {
+        return static::query()->where('type', self::TYPE_NEWSLETTER)->where('is_default', true)->first();
+    }
+}

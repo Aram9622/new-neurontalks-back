@@ -2,7 +2,9 @@
 
 namespace Tests\Feature;
 
+use App\Mail\MonthlyNewsletterMail;
 use App\Models\Blog;
+use App\Models\MailTemplate;
 use App\Models\NewsletterSubscription;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
@@ -14,6 +16,29 @@ use Tests\TestCase;
 class SendMonthlyNewsletterTest extends TestCase
 {
     use RefreshDatabase;
+
+    public function test_it_uses_the_template_attached_to_a_subscriber_and_records_it(): void
+    {
+        $template = MailTemplate::create([
+            'name' => 'July subscribers',
+            'type' => MailTemplate::TYPE_NEWSLETTER,
+            'subject' => 'News for [[month]]',
+            'body' => '<h1>Custom [[month]]</h1>[[posts]]',
+        ]);
+        $this->createNewsletterData(['one@example.com']);
+        NewsletterSubscription::query()->update(['mail_template_id' => $template->id]);
+        Mail::fake();
+
+        $this->assertSame(0, Artisan::call('newsletter:send', ['--month' => '2026-07']));
+
+        Mail::assertSent(MonthlyNewsletterMail::class, function (MonthlyNewsletterMail $mail) use ($template) {
+            return $mail->template->is($template)
+                && $mail->envelope()->subject === 'News for July 2026'
+                && str_contains($mail->render(), '<h1>Custom July 2026</h1>')
+                && str_contains($mail->render(), 'July update');
+        });
+        $this->assertDatabaseHas('monthly_newsletter_deliveries', ['mail_template_id' => $template->id]);
+    }
 
     public function test_rerunning_the_command_does_not_resend_completed_deliveries(): void
     {

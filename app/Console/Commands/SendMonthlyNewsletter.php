@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Mail\MonthlyNewsletterMail;
 use App\Models\Blog;
+use App\Models\MailTemplate;
 use App\Models\NewsletterSubscription;
 use Carbon\CarbonImmutable;
 use Illuminate\Console\Command;
@@ -40,14 +41,17 @@ class SendMonthlyNewsletter extends Command
         }
 
         $sent = 0;
-        NewsletterSubscription::query()->orderBy('id')->chunkById(100, function ($subscriptions) use ($posts, $month, &$sent) {
+        $defaultTemplate = MailTemplate::newsletterDefault();
+        NewsletterSubscription::query()->with('mailTemplate')->orderBy('id')->chunkById(100, function ($subscriptions) use ($posts, $month, $defaultTemplate, &$sent) {
             foreach ($subscriptions as $subscription) {
+                $template = $subscription->mailTemplate ?? $defaultTemplate;
                 $delivery = [
                     'newsletter_subscription_id' => $subscription->id,
                     'newsletter_month' => $month->toDateString(),
                 ];
                 $claimed = DB::table('monthly_newsletter_deliveries')->insertOrIgnore([
                     ...$delivery,
+                    'mail_template_id' => $template?->id,
                     'created_at' => now(),
                     'updated_at' => now(),
                 ]);
@@ -59,7 +63,7 @@ class SendMonthlyNewsletter extends Command
                 // Send immediately: the deployment does not run a queue worker.
                 try {
                     Mail::to($subscription->email)->send(
-                        new MonthlyNewsletterMail($posts, $month->format('F Y'))
+                        new MonthlyNewsletterMail($posts, $month->format('F Y'), $template)
                     );
                 } catch (\Throwable $exception) {
                     // Release only this failed claim so a later command run can retry it.
