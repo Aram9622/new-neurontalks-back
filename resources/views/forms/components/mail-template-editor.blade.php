@@ -121,7 +121,15 @@
             @mouseup="saveSelection()"
             class="prose min-h-96 max-w-none p-5 text-gray-950 outline-none dark:prose-invert dark:text-white"
         ></div>
-        <textarea x-show="mode === 'html'" x-model.debounce.300ms="state" spellcheck="false" aria-label="Mail template HTML" class="min-h-96 w-full resize-y border-0 bg-gray-950 p-5 font-mono text-sm text-green-300 outline-none"></textarea>
+        <textarea
+            x-show="mode === 'html'"
+            x-model.debounce.300ms="state"
+            spellcheck="false"
+            aria-label="Mail template HTML"
+            placeholder="Enter the email HTML here..."
+            class="min-h-96 w-full resize-y border-0 p-5 font-mono text-sm outline-none"
+            style="background-color: #030712; color: #86efac; caret-color: #ffffff; color-scheme: dark;"
+        ></textarea>
         <div x-show="mode === 'preview'" class="min-h-96 bg-gray-100 p-5 dark:bg-gray-950">
             <div class="mx-auto max-w-3xl overflow-auto bg-white p-4 text-gray-950 shadow" x-html="state"></div>
         </div>
