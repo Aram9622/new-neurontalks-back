@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\ConferenceController;
 use App\Http\Controllers\Api\ContactController;
 use App\Http\Controllers\Api\DatabaseController;
 use App\Http\Controllers\Api\NewsletterSubscriptionController;
+use App\Http\Controllers\Api\AuditController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -44,6 +45,7 @@ Route::get('/conferences/{slug}', [ConferenceController::class, 'show']);
 
 // Contact Form API
 Route::post('/contact', [ContactController::class, 'store']); // Новый маршрут
+Route::post('/audit', [AuditController::class, 'store']);
 
 // Newsletter API
 Route::post('/subscribe', [NewsletterSubscriptionController::class, 'store']);

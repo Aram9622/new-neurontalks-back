@@ -24,14 +24,15 @@ class MailTemplateResource extends Resource
             Forms\Components\TextInput::make('name')->required()->maxLength(255),
             Forms\Components\Select::make('type')->options([
                 MailTemplate::TYPE_NEWSLETTER => 'Subscribers newsletter',
+                MailTemplate::TYPE_AUDIT => 'Audit request notification',
             ])->default(MailTemplate::TYPE_NEWSLETTER)->required(),
             Forms\Components\TextInput::make('subject')->required()
-                ->helperText('Available placeholder: [[month]]'),
+                ->helperText('Available placeholders: [[month]], [[name]], [[email]], [[phone]], [[message]], [[improve]].'),
             MailTemplateEditor::make('body')
                 ->label('Body')
                 ->required()
                 ->columnSpanFull()
-                ->helperText('Build the email visually, edit its HTML, or start from the ready-made layout. Available placeholder: [[month]].'),
+                ->helperText('Build the email visually, edit its HTML, or start from the ready-made layout. Available placeholders depend on the mail type.'),
             Forms\Components\Toggle::make('is_default')->label('Default for this mail type')
                 ->helperText('Used when a subscriber has no template attached.'),
         ])->columns(2);

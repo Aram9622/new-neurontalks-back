@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class MailTemplate extends Model
 {
     public const TYPE_NEWSLETTER = 'newsletter';
+    public const TYPE_AUDIT = 'audit';
 
     protected $fillable = ['name', 'type', 'subject', 'body', 'is_default'];
 
@@ -32,5 +33,10 @@ class MailTemplate extends Model
     public static function newsletterDefault(): ?self
     {
         return static::query()->where('type', self::TYPE_NEWSLETTER)->where('is_default', true)->first();
+    }
+
+    public static function auditDefault(): ?self
+    {
+        return static::query()->where('type', self::TYPE_AUDIT)->where('is_default', true)->first();
     }
 }
