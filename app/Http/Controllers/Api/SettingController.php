@@ -15,7 +15,7 @@ class SettingController extends Controller
         $data = $settings->mapWithKeys(function ($setting) {
             // Выбираем значение из нужной колонки
             $value = ($setting->type === 'image')
-                ? ($setting->image_value ? asset('/public/storage/' . $setting->image_value) : null)
+                ? ($setting->image_value ? asset('/storage/' . $setting->image_value) : null)
                 : $setting->text_value;
 
             return [$setting->key => $value];
