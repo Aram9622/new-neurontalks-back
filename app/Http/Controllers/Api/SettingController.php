@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Setting;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class SettingController extends Controller
 {
@@ -15,7 +15,7 @@ class SettingController extends Controller
         $data = $settings->mapWithKeys(function ($setting) {
             // Выбираем значение из нужной колонки
             $value = ($setting->type === 'image')
-                ? ($setting->image_value ? asset('/public/storage/' . $setting->image_value) : null)
+                ? ($setting->image_value ? Storage::disk('public')->url($setting->image_value) : null)
                 : $setting->text_value;
 
             return [$setting->key => $value];

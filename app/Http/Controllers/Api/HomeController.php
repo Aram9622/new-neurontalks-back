@@ -11,7 +11,7 @@ use App\Models\Partner;
 use App\Models\Project;
 use App\Models\Section;
 use App\Models\Service;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class HomeController extends Controller
 {
@@ -55,10 +55,10 @@ class HomeController extends Controller
             if ($relatedData && ($relatedData instanceof \Illuminate\Support\Collection)) {
                 $relatedData = $relatedData->map(function($item) {
                     if (isset($item->image)) {
-                        $item->image = $item->image ? asset('/public/storage/' . $item->image) : null;
+                        $item->image = $item->image ? Storage::disk('public')->url($item->image) : null;
                     }
                     if (isset($item->logo)) {
-                        $item->logo = $item->logo ? asset('/public/storage/' . $item->logo) : null;
+                        $item->logo = $item->logo ? Storage::disk('public')->url($item->logo) : null;
                     }
                     return $item;
                 });
@@ -69,7 +69,7 @@ class HomeController extends Controller
                     'title' => $section->title,
                     'subtitle' => $section->subtitle,
                     'description' => $section->description,
-                    'image' => $section->image ? asset('public/storage/' . $section->image) : null,
+                    'image' => $section->image ? Storage::disk('public')->url($section->image) : null,
                     'button_title' => $section->button_title,
                     'button_link' => $section->button_link,
                     'model_type' => $section->model_type,

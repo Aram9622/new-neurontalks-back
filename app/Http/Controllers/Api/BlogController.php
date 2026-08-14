@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Blog;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class BlogController extends Controller
 {
@@ -15,7 +15,7 @@ class BlogController extends Controller
 
         // Формируем полные ссылки на изображения
         $blogs->getCollection()->transform(function ($blog) {
-            $blog->image = $blog->image ? asset('/public/storage/' . $blog->image) : null;
+            $blog->image = $blog->image ? Storage::disk('public')->url($blog->image) : null;
             return $blog;
         });
 
@@ -27,7 +27,7 @@ class BlogController extends Controller
     {
         $blog = Blog::where('slug', $slug)->firstOrFail();
 
-        $blog->image = $blog->image ? asset('/public/storage/' . $blog->image) : null;
+        $blog->image = $blog->image ? Storage::disk('public')->url($blog->image) : null;
 
         return response()->json($blog);
     }

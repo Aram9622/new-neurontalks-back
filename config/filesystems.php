@@ -39,7 +39,10 @@ return [
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
-            'url' => env('APP_URL').'/public/storage',
+            'url' => env(
+                'PUBLIC_STORAGE_URL',
+                preg_replace('#/public/?$#', '', rtrim(env('APP_URL'), '/')).'/storage',
+            ),
             'visibility' => 'public',
             'throw' => false,
         ],

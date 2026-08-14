@@ -3,26 +3,20 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreAuditRequest;
 use App\Mail\AuditNotificationMail;
 use App\Models\Audit;
 use App\Models\MailTemplate;
 use App\Models\Setting;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 class AuditController extends Controller
 {
-    public function store(Request $request): JsonResponse
+    public function store(StoreAuditRequest $request): JsonResponse
     {
-        $audit = Audit::create($request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255'],
-            'phone' => ['nullable', 'string', 'max:20'],
-            'message' => ['required', 'string'],
-            'improve' => ['required', 'string'],
-        ]));
+        $audit = Audit::create($request->validated());
 
         $adminEmail = Setting::where('key', 'admin_email')->value('text_value')
             ?? config('mail.from.address');

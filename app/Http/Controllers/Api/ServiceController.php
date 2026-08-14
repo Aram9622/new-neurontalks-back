@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Service;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ServiceController extends Controller
 {
@@ -15,7 +15,7 @@ class ServiceController extends Controller
 
         // Map full image URLs
         $services->getCollection()->transform(function ($service) {
-            $service->image = $service->image ? asset('/public/storage/' . $service->image) : null;
+            $service->image = $service->image ? Storage::disk('public')->url($service->image) : null;
             return $service;
         });
 
@@ -27,7 +27,7 @@ class ServiceController extends Controller
     {
         $service = Service::where('slug', $slug)->firstOrFail();
 
-        $service->image = $service->image ? asset('/public/storage/' . $service->image) : null;
+        $service->image = $service->image ? Storage::disk('public')->url($service->image) : null;
 
         return response()->json($service);
     }

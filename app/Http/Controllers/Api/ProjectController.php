@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Project;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ProjectController extends Controller
 {
@@ -15,12 +15,12 @@ class ProjectController extends Controller
 
         // Преобразуем изображения в полные URL
         $projects->getCollection()->transform(function ($project) {
-            $project->image = $project->image ? asset('/public/storage/' . $project->image) : null;
+            $project->image = $project->image ? Storage::disk('public')->url($project->image) : null;
 
             // Преобразуем галерею в массив полных URL
             if ($project->gallery) {
                 $project->gallery = array_map(function($path) {
-                    return asset('/public/storage/' . $path);
+                    return Storage::disk('public')->url($path);
                 }, $project->gallery);
             }
 
@@ -35,12 +35,12 @@ class ProjectController extends Controller
     {
         $project = Project::with('technologies')->where('slug', $slug)->firstOrFail();
 
-        $project->image = $project->image ? asset('/public/storage/' . $project->image) : null;
+        $project->image = $project->image ? Storage::disk('public')->url($project->image) : null;
 
         // Преобразуем галерею в массив полных URL
         if ($project->gallery) {
             $project->gallery = array_map(function($path) {
-                return asset('/public/storage/' . $path);
+                return Storage::disk('public')->url($path);
             }, $project->gallery);
         }
 
