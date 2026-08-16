@@ -23,19 +23,21 @@ class MailTemplateResource extends Resource
         return $form->schema([
             Forms\Components\TextInput::make('name')->required()->maxLength(255),
             Forms\Components\Select::make('type')->options([
-                MailTemplate::TYPE_NEWSLETTER => 'Subscribers newsletter',
-                MailTemplate::TYPE_SUBSCRIPTION => 'Subscription confirmation',
+                MailTemplate::TYPE_NEWSLETTER => 'Monthly subscribers newsletter',
+                MailTemplate::TYPE_SUBSCRIPTION => 'New subscriber welcome email',
                 MailTemplate::TYPE_AUDIT => 'Audit request notification',
+                MailTemplate::TYPE_CONTACT_NOTIFICATION => 'New contact notification',
+                MailTemplate::TYPE_CONTACT_REPLY => 'Contact reply',
             ])->default(MailTemplate::TYPE_NEWSLETTER)->required(),
             Forms\Components\TextInput::make('subject')->required()
-                ->helperText('Available placeholders: [[month]], [[name]], [[email]], [[phone]], [[message]], [[improve]]. Subscription confirmations support [[email]].'),
+                ->helperText('Available placeholders: [[month]], [[name]], [[email]], [[phone]], [[message]], [[improve]], [[reply]]. Placeholders depend on the selected mail type.'),
             MailTemplateEditor::make('body')
                 ->label('Body')
                 ->required()
                 ->columnSpanFull()
                 ->helperText('Build the email visually, edit its HTML, or start from the ready-made layout. Available placeholders depend on the mail type.'),
             Forms\Components\Toggle::make('is_default')->label('Default for this mail type')
-                ->helperText('Used when a subscriber has no template attached.'),
+                ->helperText('Preferred when multiple templates exist. If none is marked default, the newest template of this type is used.'),
         ])->columns(2);
     }
 
