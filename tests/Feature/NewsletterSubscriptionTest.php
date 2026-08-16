@@ -2,16 +2,39 @@
 
 namespace Tests\Feature;
 
+use App\Mail\NewsletterSubscriptionConfirmationMail;
 use App\Models\NewsletterSubscription;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
 
 class NewsletterSubscriptionTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function test_a_confirmation_email_is_sent_after_subscribing(): void
+    {
+        Mail::fake();
+
+        $response = $this->postJson('/api/subscribe', [
+            'email' => ' Subscriber@Example.com ',
+        ]);
+
+        $response
+            ->assertCreated()
+            ->assertJsonPath('success', true)
+            ->assertJsonPath('data.email', 'subscriber@example.com');
+
+        Mail::assertSent(NewsletterSubscriptionConfirmationMail::class, function ($mail) {
+            return $mail->hasTo('subscriber@example.com')
+                && $mail->subscription->email === 'subscriber@example.com';
+        });
+    }
+
     public function test_duplicate_subscription_returns_a_clean_json_response_without_an_accept_header(): void
     {
+        Mail::fake();
+
         NewsletterSubscription::create(['email' => 'subscriber@example.com']);
 
         $response = $this->post('/api/subscribe', [
@@ -30,5 +53,7 @@ class NewsletterSubscriptionTest extends TestCase
             ]);
 
         $this->assertDatabaseCount('newsletter_subscriptions', 1);
+
+        Mail::assertNothingSent();
     }
 }
