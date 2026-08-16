@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Mail\NewsletterSubscriptionConfirmationMail;
+use App\Models\MailTemplate;
 use App\Models\NewsletterSubscription;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
@@ -27,7 +28,8 @@ class NewsletterSubscriptionTest extends TestCase
 
         Mail::assertSent(NewsletterSubscriptionConfirmationMail::class, function ($mail) {
             return $mail->hasTo('subscriber@example.com')
-                && $mail->subscription->email === 'subscriber@example.com';
+                && $mail->subscription->email === 'subscriber@example.com'
+                && $mail->template === null;
         });
     }
 
@@ -55,5 +57,30 @@ class NewsletterSubscriptionTest extends TestCase
         $this->assertDatabaseCount('newsletter_subscriptions', 1);
 
         Mail::assertNothingSent();
+    }
+
+    public function test_subscription_confirmation_uses_the_configured_default_template(): void
+    {
+        Mail::fake();
+
+        $template = MailTemplate::create([
+            'name' => 'Subscription welcome',
+            'type' => MailTemplate::TYPE_SUBSCRIPTION,
+            'subject' => 'Welcome [[email]]',
+            'body' => '<p>Thanks, [[email]]!</p>',
+            'is_default' => true,
+        ]);
+
+        $this->postJson('/api/subscribe', [
+            'email' => 'subscriber@example.com',
+        ])->assertCreated();
+
+        Mail::assertSent(NewsletterSubscriptionConfirmationMail::class, function ($mail) use ($template) {
+            $html = $mail->render();
+
+            return $mail->template->is($template)
+                && $mail->envelope()->subject === 'Welcome subscriber@example.com'
+                && str_contains($html, '<p>Thanks, subscriber@example.com!</p>');
+        });
     }
 }
