@@ -83,4 +83,55 @@ class NewsletterSubscriptionTest extends TestCase
                 && str_contains($html, '<p>Thanks, subscriber@example.com!</p>');
         });
     }
+
+    public function test_subscription_confirmation_uses_the_newest_welcome_template_when_none_is_default(): void
+    {
+        Mail::fake();
+
+        MailTemplate::create([
+            'name' => 'Old welcome',
+            'type' => MailTemplate::TYPE_SUBSCRIPTION,
+            'subject' => 'Old welcome',
+            'body' => '<p>Old welcome</p>',
+        ]);
+        $template = MailTemplate::create([
+            'name' => 'New welcome',
+            'type' => MailTemplate::TYPE_SUBSCRIPTION,
+            'subject' => 'New welcome [[email]]',
+            'body' => '<p>New welcome, [[email]]!</p>',
+        ]);
+
+        $this->postJson('/api/subscribe', [
+            'email' => 'subscriber@example.com',
+        ])->assertCreated();
+
+        Mail::assertSent(
+            NewsletterSubscriptionConfirmationMail::class,
+            fn ($mail) => $mail->template->is($template)
+                && $mail->envelope()->subject === 'New welcome subscriber@example.com'
+                && str_contains($mail->render(), '<p>New welcome, subscriber@example.com!</p>')
+        );
+    }
+
+    public function test_subscription_confirmation_supports_existing_newsletter_templates(): void
+    {
+        Mail::fake();
+
+        $template = MailTemplate::create([
+            'name' => 'Subscribe',
+            'type' => MailTemplate::TYPE_NEWSLETTER,
+            'subject' => 'Subscription confirmed',
+            'body' => '<p>Thanks for subscribing, [[email]]!</p>',
+        ]);
+
+        $this->postJson('/api/subscribe', [
+            'email' => 'subscriber@example.com',
+        ])->assertCreated();
+
+        Mail::assertSent(
+            NewsletterSubscriptionConfirmationMail::class,
+            fn ($mail) => $mail->template->is($template)
+                && str_contains($mail->render(), '<p>Thanks for subscribing, subscriber@example.com!</p>')
+        );
+    }
 }

@@ -3,6 +3,7 @@
 namespace App\Mail;
 
 use App\Models\Contact;
+use App\Models\MailTemplate;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
@@ -13,17 +14,11 @@ class ContactReplyMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $contact;
-    public $replyMessage;
-
-    /**
-     * Create a new message instance.
-     */
-    public function __construct(Contact $contact, string $replyMessage)
-    {
-        $this->contact = $contact;
-        $this->replyMessage = $replyMessage;
-    }
+    public function __construct(
+        public Contact $contact,
+        public string $replyMessage,
+        public ?MailTemplate $template = null,
+    ) {}
 
     /**
      * Get the message envelope.
@@ -31,7 +26,9 @@ class ContactReplyMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Reply to your inquiry from Neuron',
+            subject: $this->replacePlaceholders(
+                $this->template?->subject ?? 'Reply to your inquiry from Neuron'
+            ),
         );
     }
 
@@ -40,9 +37,14 @@ class ContactReplyMail extends Mailable
      */
     public function content(): Content
     {
-        return new Content(
-            view: 'emails.contact-reply',
-        );
+        if (! $this->template) {
+            return new Content(view: 'emails.contact-reply');
+        }
+
+        return new Content(view: 'emails.template', with: [
+            'subject' => $this->replacePlaceholders($this->template->subject),
+            'body' => $this->replacePlaceholders($this->template->body),
+        ]);
     }
 
     /**
@@ -51,5 +53,14 @@ class ContactReplyMail extends Mailable
     public function attachments(): array
     {
         return [];
+    }
+
+    private function replacePlaceholders(string $value): string
+    {
+        return str_replace(
+            ['[[name]]', '[[email]]', '[[phone]]', '[[message]]', '[[reply]]'],
+            [e($this->contact->name), e($this->contact->email), e($this->contact->phone ?? ''), e($this->contact->message), e($this->replyMessage)],
+            $value,
+        );
     }
 }

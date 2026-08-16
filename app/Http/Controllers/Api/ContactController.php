@@ -4,10 +4,12 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Contact;
+use App\Models\MailTemplate;
 use App\Models\Setting;
 use App\Mail\AdminContactNotificationMail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
 
 class ContactController extends Controller
 {
@@ -29,12 +31,18 @@ class ContactController extends Controller
 
         try {
             // 1. Уведомление администратору
-            Mail::to($adminEmail)->send(new AdminContactNotificationMail($contact));
+            Mail::to($adminEmail)->send(new AdminContactNotificationMail(
+                $contact,
+                MailTemplate::preferredFor(MailTemplate::TYPE_CONTACT_NOTIFICATION),
+            ));
             
             // 2. (Опционально) Подтверждение клиенту (если вы хотите отдельное письмо "Мы получили ваше сообщение")
             // Здесь можно создать отдельный Mailable, если нужно.
-        } catch (\Exception $e) {
-            // Логируем ошибку, если почта не отправилась, но API все равно должен вернуть успех, так как в базу данные попали.
+        } catch (\Throwable $exception) {
+            Log::warning('Unable to send contact notification email.', [
+                'contact_id' => $contact->id,
+                'exception' => $exception->getMessage(),
+            ]);
         }
 
         return response()->json([

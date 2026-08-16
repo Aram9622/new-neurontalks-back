@@ -3,15 +3,16 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\ContactResource\Pages;
+use App\Mail\ContactReplyMail;
 use App\Models\Contact;
+use App\Models\MailTemplate;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use App\Mail\ContactReplyMail;
 use Illuminate\Support\Facades\Mail;
-use Filament\Notifications\Notification;
 
 class ContactResource extends Resource
 {
@@ -69,7 +70,11 @@ class ContactResource extends Resource
                         // Если ответ ввели только сейчас
                         if (!empty($data['reply']) && empty($record->replied_at)) {
                             // Отправляем письмо пользователю напрямую
-                            Mail::to($record->email)->send(new ContactReplyMail($record, $data['reply']));
+                            Mail::to($record->email)->send(new ContactReplyMail(
+                                $record,
+                                $data['reply'],
+                                MailTemplate::preferredFor(MailTemplate::TYPE_CONTACT_REPLY),
+                            ));
                             
                             $data['replied_at'] = now();
                         }
@@ -91,7 +96,11 @@ class ContactResource extends Resource
                     ])
                     ->action(function (Contact $record, array $data) {
                         // Отправляем письмо
-                        Mail::to($record->email)->send(new ContactReplyMail($record, $data['reply']));
+                        Mail::to($record->email)->send(new ContactReplyMail(
+                            $record,
+                            $data['reply'],
+                            MailTemplate::preferredFor(MailTemplate::TYPE_CONTACT_REPLY),
+                        ));
 
                         $record->update([
                             'reply' => $data['reply'],
