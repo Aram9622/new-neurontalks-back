@@ -24,10 +24,11 @@ class MailTemplateResource extends Resource
             Forms\Components\TextInput::make('name')->required()->maxLength(255),
             Forms\Components\Select::make('type')->options([
                 MailTemplate::TYPE_NEWSLETTER => 'Subscribers newsletter',
+                MailTemplate::TYPE_SUBSCRIPTION => 'Subscription confirmation',
                 MailTemplate::TYPE_AUDIT => 'Audit request notification',
             ])->default(MailTemplate::TYPE_NEWSLETTER)->required(),
             Forms\Components\TextInput::make('subject')->required()
-                ->helperText('Available placeholders: [[month]], [[name]], [[email]], [[phone]], [[message]], [[improve]].'),
+                ->helperText('Available placeholders: [[month]], [[name]], [[email]], [[phone]], [[message]], [[improve]]. Subscription confirmations support [[email]].'),
             MailTemplateEditor::make('body')
                 ->label('Body')
                 ->required()
