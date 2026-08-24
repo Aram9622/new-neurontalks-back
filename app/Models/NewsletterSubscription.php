@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Facades\URL;
 
 class NewsletterSubscription extends Model
 {
@@ -29,5 +30,10 @@ class NewsletterSubscription extends Model
     public function latestDelivery(): HasOne
     {
         return $this->hasOne(MonthlyNewsletterDelivery::class)->latestOfMany('completed_at');
+    }
+
+    public function unsubscribeUrl(): string
+    {
+        return URL::signedRoute('newsletter.unsubscribe', ['subscription' => $this]);
     }
 }
