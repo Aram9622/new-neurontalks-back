@@ -7,6 +7,7 @@ use App\Models\MailTemplate;
 use App\Models\NewsletterSubscription;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\URL;
 use Tests\TestCase;
 
 class NewsletterSubscriptionTest extends TestCase
@@ -57,6 +58,36 @@ class NewsletterSubscriptionTest extends TestCase
         $this->assertDatabaseCount('newsletter_subscriptions', 1);
 
         Mail::assertNothingSent();
+    }
+
+    public function test_subscription_email_contains_a_signed_unsubscribe_link(): void
+    {
+        $subscription = NewsletterSubscription::create(['email' => 'subscriber@example.com']);
+        $mail = new NewsletterSubscriptionConfirmationMail($subscription);
+
+        $this->assertStringContainsString('Unsubscribe', $mail->render());
+        $this->assertStringContainsString(e($subscription->unsubscribeUrl()), $mail->render());
+    }
+
+    public function test_subscriber_can_unsubscribe_with_a_signed_link(): void
+    {
+        $subscription = NewsletterSubscription::create(['email' => 'subscriber@example.com']);
+
+        $this->get($subscription->unsubscribeUrl())
+            ->assertOk()
+            ->assertSee('You have been unsubscribed');
+
+        $this->assertModelMissing($subscription);
+    }
+
+    public function test_unsubscribe_link_rejects_an_invalid_signature(): void
+    {
+        $subscription = NewsletterSubscription::create(['email' => 'subscriber@example.com']);
+        $url = URL::route('newsletter.unsubscribe', ['subscription' => $subscription]);
+
+        $this->get($url)->assertForbidden();
+
+        $this->assertModelExists($subscription);
     }
 
     public function test_subscription_confirmation_uses_the_configured_default_template(): void

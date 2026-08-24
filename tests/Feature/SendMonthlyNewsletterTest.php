@@ -35,7 +35,8 @@ class SendMonthlyNewsletterTest extends TestCase
             return $mail->template->is($template)
                 && $mail->envelope()->subject === 'News for July 2026'
                 && str_contains($mail->render(), '<h1>Custom July 2026</h1>')
-                && str_contains($mail->render(), 'Custom newsletter content');
+                && str_contains($mail->render(), 'Custom newsletter content')
+                && str_contains($mail->render(), 'Unsubscribe');
         });
         $this->assertDatabaseHas('monthly_newsletter_deliveries', ['mail_template_id' => $template->id]);
     }

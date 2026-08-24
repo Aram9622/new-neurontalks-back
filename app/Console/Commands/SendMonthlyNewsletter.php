@@ -63,7 +63,7 @@ class SendMonthlyNewsletter extends Command
                 // Send immediately: the deployment does not run a queue worker.
                 try {
                     Mail::to($subscription->email)->send(
-                        new MonthlyNewsletterMail($posts, $month->format('F Y'), $template)
+                        new MonthlyNewsletterMail($posts, $month->format('F Y'), $subscription, $template)
                     );
                 } catch (\Throwable $exception) {
                     // Release only this failed claim so a later command run can retry it.

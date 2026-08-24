@@ -15,5 +15,7 @@
             <p><a href="{{ url('/blogs/'.$post->slug) }}">Read more</a></p>
         </article>
     @endforeach
+
+    @include('emails.partials.unsubscribe', ['subscription' => $subscription])
 </body>
 </html>

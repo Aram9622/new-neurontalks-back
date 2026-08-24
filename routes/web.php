@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Artisan;
 
 use App\Http\Controllers\SitemapController;
+use App\Http\Controllers\NewsletterUnsubscribeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,6 +22,10 @@ Route::get('/', function () {
 });
 
 Route::get('/sitemap.xml', [SitemapController::class, 'index']);
+
+Route::get('/newsletter/unsubscribe/{subscription}', NewsletterUnsubscribeController::class)
+    ->middleware('signed')
+    ->name('newsletter.unsubscribe');
 
 Route::get('/linkstorage', function () {
     Artisan::call('storage:link');

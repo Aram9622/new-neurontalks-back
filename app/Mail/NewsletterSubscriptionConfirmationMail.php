@@ -35,6 +35,7 @@ class NewsletterSubscriptionConfirmationMail extends Mailable
         return new Content(view: 'emails.template', with: [
             'subject' => $this->replacePlaceholders($this->template->subject),
             'body' => $this->replacePlaceholders($this->template->body),
+            'subscription' => $this->subscription,
         ]);
     }
 

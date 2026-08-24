@@ -3,6 +3,7 @@
 namespace App\Mail;
 
 use App\Models\MailTemplate;
+use App\Models\NewsletterSubscription;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
@@ -13,6 +14,7 @@ class MonthlyNewsletterMail extends Mailable
     public function __construct(
         public Collection $posts,
         public string $month,
+        public NewsletterSubscription $subscription,
         public ?MailTemplate $template = null,
     ) {
     }
@@ -33,6 +35,7 @@ class MonthlyNewsletterMail extends Mailable
         return new Content(view: 'emails.template', with: [
             'subject' => $this->replacePlaceholders($this->template->subject),
             'body' => $this->replacePlaceholders($this->template->body),
+            'subscription' => $this->subscription,
         ]);
     }
 

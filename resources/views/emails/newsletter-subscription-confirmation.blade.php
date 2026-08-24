@@ -9,5 +9,6 @@
     <h1>Thank you for subscribing!</h1>
     <p>Your email address, {{ $subscription->email }}, is now subscribed to the NeuronTalks newsletter.</p>
     <p>We look forward to sharing our latest blogs and news with you.</p>
+    @include('emails.partials.unsubscribe', ['subscription' => $subscription])
 </body>
 </html>
