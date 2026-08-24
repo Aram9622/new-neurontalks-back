@@ -56,7 +56,13 @@ class NewsletterSubscriptionResource extends Resource
                             ->searchable()->nullable()->helperText('Leave empty to use the default template.'),
                     ])->fillForm(fn (NewsletterSubscription $record) => ['mail_template_id' => $record->mail_template_id])
                     ->action(fn (NewsletterSubscription $record, array $data) => $record->update($data)),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\DeleteAction::make('unsubscribe')
+                    ->label('Unsubscribe')
+                    ->icon('heroicon-o-envelope-open')
+                    ->modalHeading('Unsubscribe subscriber')
+                    ->modalDescription(fn (NewsletterSubscription $record): string => "Are you sure you want to unsubscribe {$record->email}?")
+                    ->modalSubmitActionLabel('Unsubscribe')
+                    ->successNotificationTitle('Subscriber unsubscribed'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

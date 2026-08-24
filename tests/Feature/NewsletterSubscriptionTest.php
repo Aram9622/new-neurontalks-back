@@ -2,12 +2,14 @@
 
 namespace Tests\Feature;
 
+use App\Filament\Resources\NewsletterSubscriptionResource\Pages\ListNewsletterSubscriptions;
 use App\Mail\NewsletterSubscriptionConfirmationMail;
 use App\Models\MailTemplate;
 use App\Models\NewsletterSubscription;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\URL;
+use Livewire\Livewire;
 use Tests\TestCase;
 
 class NewsletterSubscriptionTest extends TestCase
@@ -100,6 +102,17 @@ class NewsletterSubscriptionTest extends TestCase
         $this->get($url)
             ->assertOk()
             ->assertSee('You have been unsubscribed');
+
+        $this->assertModelMissing($subscription);
+    }
+
+    public function test_an_admin_can_unsubscribe_a_subscriber_from_the_subscribers_table(): void
+    {
+        $subscription = NewsletterSubscription::create(['email' => 'subscriber@example.com']);
+
+        Livewire::test(ListNewsletterSubscriptions::class)
+            ->callTableAction('unsubscribe', $subscription)
+            ->assertHasNoTableActionErrors();
 
         $this->assertModelMissing($subscription);
     }
