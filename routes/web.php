@@ -23,9 +23,16 @@ Route::get('/', function () {
 
 Route::get('/sitemap.xml', [SitemapController::class, 'index']);
 
-Route::get('/newsletter/unsubscribe/{subscription}', NewsletterUnsubscribeController::class)
+// Keep generated email links under /api so the shared web-root rewrite sends
+// them to Laravel instead of treating them as frontend routes.
+Route::get('/api/newsletter/unsubscribe/{subscription}', NewsletterUnsubscribeController::class)
     ->middleware('signed')
     ->name('newsletter.unsubscribe');
+
+// Preserve links from emails sent before the unsubscribe route moved to /api.
+Route::get('/newsletter/unsubscribe/{subscription}', NewsletterUnsubscribeController::class)
+    ->middleware('signed')
+    ->name('newsletter.unsubscribe.legacy');
 
 Route::get('/linkstorage', function () {
     Artisan::call('storage:link');

@@ -73,6 +73,8 @@ class NewsletterSubscriptionTest extends TestCase
     {
         $subscription = NewsletterSubscription::create(['email' => 'subscriber@example.com']);
 
+        $this->assertStringContainsString('/api/newsletter/unsubscribe/', $subscription->unsubscribeUrl());
+
         $this->get($subscription->unsubscribeUrl())
             ->assertOk()
             ->assertSee('You have been unsubscribed');
@@ -88,6 +90,18 @@ class NewsletterSubscriptionTest extends TestCase
         $this->get($url)->assertForbidden();
 
         $this->assertModelExists($subscription);
+    }
+
+    public function test_legacy_signed_unsubscribe_link_remains_valid(): void
+    {
+        $subscription = NewsletterSubscription::create(['email' => 'subscriber@example.com']);
+        $url = URL::signedRoute('newsletter.unsubscribe.legacy', ['subscription' => $subscription]);
+
+        $this->get($url)
+            ->assertOk()
+            ->assertSee('You have been unsubscribed');
+
+        $this->assertModelMissing($subscription);
     }
 
     public function test_subscription_confirmation_uses_the_configured_default_template(): void
