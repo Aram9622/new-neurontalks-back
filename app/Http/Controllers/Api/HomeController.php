@@ -72,6 +72,7 @@ class HomeController extends Controller
                     'image' => $section->image ? asset('storage/' . $section->image) : null,
                     'button_title' => $section->button_title,
                     'button_link' => $section->button_link,
+                    'button_color' => $section->button_color,
                     'model_type' => $section->model_type,
                     'data' => $relatedData
                 ]
