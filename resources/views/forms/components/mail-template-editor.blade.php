@@ -99,7 +99,9 @@
 
         <div class="flex flex-wrap items-center justify-between gap-2 border-b border-gray-200 px-3 py-2 text-sm dark:border-white/10">
             <div class="flex flex-wrap gap-2">
-                <button type="button" @click="insert('[[month]]')" class="rounded-md bg-gray-100 px-2 py-1 font-mono text-xs dark:bg-white/10">+ [[month]]</button>
+                @foreach (['month', 'name', 'email', 'phone', 'message', 'improve', 'reply'] as $placeholder)
+                    <button type="button" @click="insert('[[{{ $placeholder }}]]')" class="rounded-md bg-gray-100 px-2 py-1 font-mono text-xs dark:bg-white/10">+ [[{{ $placeholder }}]]</button>
+                @endforeach
                 <button type="button" @click="starter()" class="rounded-md bg-primary-600 px-3 py-1 text-xs font-semibold text-white">Use starter template</button>
             </div>
             <div class="flex rounded-lg bg-gray-100 p-1 dark:bg-white/10">
