@@ -36,6 +36,9 @@ class SectionResource extends Resource
                     ->unique(ignoreRecord: true),
                 Forms\Components\TextInput::make('button_title'),
                 Forms\Components\TextInput::make('button_link'),
+                Forms\Components\ColorPicker::make('button_color')
+                    ->label('Button color')
+                    ->helperText('Choose a color or enter a custom color value.'),
                 Forms\Components\Select::make('model_type')
                     ->options([
                         'Banner' => 'Banners',
