@@ -47,13 +47,13 @@ class ProjectResource extends Resource
                     ])
                     ->label('Category'),
 
-                Forms\Components\FileUpload::make('image')
+                Forms\Components\FileUpload::make('image')->disk('public')
                     ->label('Main Image')
                     ->image()
                     ->directory('projects/main')
                     ->required(),
 
-                Forms\Components\FileUpload::make('gallery')
+                Forms\Components\FileUpload::make('gallery')->disk('public')
                     ->label('Gallery')
                     ->image()
                     ->multiple() // Позволяет загружать несколько фото
@@ -77,7 +77,7 @@ class ProjectResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\ImageColumn::make('image'),
+                Tables\Columns\ImageColumn::make('image')->disk('public'),
                 Tables\Columns\TextColumn::make('title')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('category')

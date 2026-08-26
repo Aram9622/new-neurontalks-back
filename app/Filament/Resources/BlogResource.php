@@ -41,7 +41,7 @@ class BlogResource extends Resource
                     ->default('blog')
                     ->required(),
 
-                Forms\Components\FileUpload::make('image')
+                Forms\Components\FileUpload::make('image')->disk('public')
                     ->image()
                     ->directory('blogs')
                     ->required(),
@@ -56,7 +56,7 @@ class BlogResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\ImageColumn::make('image'),
+                Tables\Columns\ImageColumn::make('image')->disk('public'),
                 Tables\Columns\TextColumn::make('title')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('type')

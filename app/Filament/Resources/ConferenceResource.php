@@ -44,7 +44,7 @@ class ConferenceResource extends Resource
                         
                         Forms\Components\Tabs\Tab::make('Media & Buttons')
                             ->schema([
-                                Forms\Components\FileUpload::make('main_image')
+                                Forms\Components\FileUpload::make('main_image')->disk('public')
                                     ->image()
                                     ->directory('conferences/images'),
                                 Forms\Components\TextInput::make('video_url')
@@ -75,7 +75,7 @@ class ConferenceResource extends Resource
                                     ->schema([
                                         Forms\Components\TextInput::make('title')->required(),
                                         Forms\Components\Textarea::make('description'),
-                                        Forms\Components\FileUpload::make('image')
+                                        Forms\Components\FileUpload::make('image')->disk('public')
                                             ->image()
                                             ->directory('conferences/sections'),
                                     ]),
@@ -90,7 +90,7 @@ class ConferenceResource extends Resource
                                     ->createOptionForm([
                                         Forms\Components\TextInput::make('fullname')->required(),
                                         Forms\Components\TextInput::make('profession'),
-                                        Forms\Components\FileUpload::make('image')->image(),
+                                        Forms\Components\FileUpload::make('image')->disk('public')->image(),
                                     ]),
                                 Forms\Components\Select::make('partners')
                                     ->relationship('partners', 'name')
@@ -105,7 +105,7 @@ class ConferenceResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\ImageColumn::make('main_image'),
+                Tables\Columns\ImageColumn::make('main_image')->disk('public'),
                 Tables\Columns\TextColumn::make('title')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('date')

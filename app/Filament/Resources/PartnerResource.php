@@ -22,7 +22,7 @@ class PartnerResource extends Resource
             ->schema([
                 Forms\Components\TextInput::make('name')
                     ->required(),
-                Forms\Components\FileUpload::make('logo')
+                Forms\Components\FileUpload::make('logo')->disk('public')
                     ->image()
                     ->directory('partners') // Картинки будут сохраняться в storage/app/public/partners
                     ->required(),
@@ -37,7 +37,7 @@ class PartnerResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
-                Tables\Columns\ImageColumn::make('logo'), // Показываем картинку в таблице
+                Tables\Columns\ImageColumn::make('logo')->disk('public'), // Показываем картинку в таблице
                 Tables\Columns\TextColumn::make('link')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')

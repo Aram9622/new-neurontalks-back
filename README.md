@@ -51,6 +51,20 @@ migrations before accepting subscriptions:
 php artisan migrate --force
 ```
 
+## Public uploads
+
+Uploaded images are stored on Laravel's `public` filesystem disk. On every new
+deployment, expose the disk with Laravel's storage link:
+
+```bash
+php artisan storage:link
+```
+
+Keep `FILESYSTEM_PUBLIC_URL=/storage` unless uploads are intentionally served
+from a CDN. A relative URL makes Filament previews use the same host and scheme
+as the admin panel, including behind an HTTPS proxy. After changing filesystem
+settings, clear the cached configuration with `php artisan config:clear`.
+
 ## Learning Laravel
 
 Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.

@@ -27,7 +27,7 @@ class SectionResource extends Resource
                 Forms\Components\TextInput::make('subtitle'),
                 Forms\Components\Textarea::make('description')
                     ->columnSpanFull(),
-                Forms\Components\FileUpload::make('image')
+                Forms\Components\FileUpload::make('image')->disk('public')
                     ->image(),
                 Forms\Components\TextInput::make('slug')
                     ->disabled(fn (string $operation) => $operation === 'edit')

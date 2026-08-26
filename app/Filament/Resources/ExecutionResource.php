@@ -44,7 +44,7 @@ class ExecutionResource extends Resource
 
                 Forms\Components\Section::make('Details')
                     ->schema([
-                        Forms\Components\FileUpload::make('image')
+                        Forms\Components\FileUpload::make('image')->disk('public')
                             ->image()
                             ->directory('executions'),
 
@@ -58,7 +58,7 @@ class ExecutionResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\ImageColumn::make('image'),
+                Tables\Columns\ImageColumn::make('image')->disk('public'),
                 Tables\Columns\TextColumn::make('title')
                     ->searchable(),
                 Tables\Columns\ColorColumn::make('color') // Визуальный показ цвета в таблице
