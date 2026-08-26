@@ -39,7 +39,10 @@ return [
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
-            'url' => env('APP_URL').'/storage',
+            // Keep browser requests on the same origin as the Filament panel.
+            // An absolute APP_URL here breaks FilePond previews when the admin
+            // is accessed through another host, HTTPS proxy, or staging URL.
+            'url' => env('FILESYSTEM_PUBLIC_URL', '/storage'),
             'visibility' => 'public',
             'throw' => false,
         ],

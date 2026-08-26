@@ -54,15 +54,16 @@ php artisan migrate --force
 ## Public uploads
 
 Uploaded images are stored on Laravel's `public` filesystem disk. On every new
-deployment, set `APP_URL` to the public URL of the application and expose the
-disk with Laravel's storage link:
+deployment, expose the disk with Laravel's storage link:
 
 ```bash
 php artisan storage:link
 ```
 
-After changing `APP_URL` or `FILESYSTEM_DISK`, clear the cached configuration
-with `php artisan config:clear` so that image previews use the current URL.
+Keep `FILESYSTEM_PUBLIC_URL=/storage` unless uploads are intentionally served
+from a CDN. A relative URL makes Filament previews use the same host and scheme
+as the admin panel, including behind an HTTPS proxy. After changing filesystem
+settings, clear the cached configuration with `php artisan config:clear`.
 
 ## Learning Laravel
 
