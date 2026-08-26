@@ -50,7 +50,7 @@ class SettingResource extends Resource
                             ->required(),
 
                         // Поле напрямую привязано к колонке image_value
-                        Forms\Components\FileUpload::make('image_value')
+                        Forms\Components\FileUpload::make('image_value')->disk('public')
                             ->label('Upload Image')
                             ->image()
                             ->directory('settings')
@@ -76,7 +76,7 @@ class SettingResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('group')
                     ->badge(),
-                Tables\Columns\ImageColumn::make('image_value')
+                Tables\Columns\ImageColumn::make('image_value')->disk('public')
                     ->label('Preview'),
                 Tables\Columns\TextColumn::make('text_value')
                     ->label('Value')

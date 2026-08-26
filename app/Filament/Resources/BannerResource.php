@@ -27,7 +27,7 @@ class BannerResource extends Resource
                     ->maxLength(255),
                 Forms\Components\TextInput::make('subtitle')
                     ->maxLength(255),
-                Forms\Components\FileUpload::make('image')
+                Forms\Components\FileUpload::make('image')->disk('public')
                     ->image(),
                 Forms\Components\TextInput::make('link')
                     ->maxLength(255),
@@ -42,7 +42,7 @@ class BannerResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('subtitle')
                     ->searchable(),
-                Tables\Columns\ImageColumn::make('image'),
+                Tables\Columns\ImageColumn::make('image')->disk('public'),
                 Tables\Columns\TextColumn::make('link')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')

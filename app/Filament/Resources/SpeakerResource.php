@@ -30,7 +30,7 @@ class SpeakerResource extends Resource
                     ->maxLength(255),
                 Forms\Components\TextInput::make('profession')
                     ->maxLength(255),
-                Forms\Components\FileUpload::make('image')
+                Forms\Components\FileUpload::make('image')->disk('public')
                     ->image(),
             ]);
     }
@@ -45,7 +45,7 @@ class SpeakerResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('profession')
                     ->searchable(),
-                Tables\Columns\ImageColumn::make('image'),
+                Tables\Columns\ImageColumn::make('image')->disk('public'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

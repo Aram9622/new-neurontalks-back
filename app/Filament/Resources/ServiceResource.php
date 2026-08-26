@@ -37,7 +37,7 @@ class ServiceResource extends Resource
                     ->unique(ignoreRecord: true),
                 Forms\Components\Textarea::make('description')
                     ->columnSpanFull(),
-                Forms\Components\FileUpload::make('image')
+                Forms\Components\FileUpload::make('image')->disk('public')
                     ->image(),
             ]);
     }
@@ -50,7 +50,7 @@ class ServiceResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('slug')
                     ->searchable(),
-                Tables\Columns\ImageColumn::make('image'),
+                Tables\Columns\ImageColumn::make('image')->disk('public'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
