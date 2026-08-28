@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Blog;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\File;
 use Tests\TestCase;
 
 class SeoMetadataTest extends TestCase
@@ -56,5 +57,21 @@ class SeoMetadataTest extends TestCase
         ]);
 
         $this->assertSame(100, $seo->score());
+    }
+
+    public function test_sitemap_can_be_generated_as_a_static_xml_file(): void
+    {
+        Blog::factory()->create(['slug' => 'generated-sitemap-post']);
+        $path = storage_path('framework/testing/sitemap.xml');
+
+        File::delete($path);
+
+        $this->artisan('sitemap:generate', ['--path' => $path])
+            ->assertSuccessful();
+
+        $this->assertFileExists($path);
+        $this->assertStringContainsString('/blog/generated-sitemap-post', File::get($path));
+
+        File::delete($path);
     }
 }

@@ -21,6 +21,20 @@ Laravel is a web application framework with expressive, elegant syntax. We belie
 
 Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
+## Sitemap
+
+The sitemap is always available dynamically at `/sitemap.xml`. To generate a
+static `public/sitemap.xml` after deployment, run:
+
+```bash
+php artisan sitemap:generate
+```
+
+It can also be generated from **Admin → SEO → SEO audit → Generate sitemap**.
+The Laravel scheduler refreshes the static file daily, so production must run
+`php artisan schedule:run` every minute. Set `FRONTEND_URL` to the public
+frontend origin before generating the file.
+
 ## Newsletter scheduler
 
 The monthly newsletter is sent synchronously by an Artisan command and does not
