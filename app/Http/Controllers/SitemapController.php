@@ -25,7 +25,7 @@ class SitemapController extends Controller
         $urls[] = ['loc' => $frontendUrl . '/conferences', 'lastmod' => now()->toAtomString(), 'priority' => '0.8'];
 
         // Динамические страницы - Блоги
-        Blog::all()->each(function ($item) use (&$urls, $frontendUrl) {
+        $this->sitemapItems(Blog::class)->each(function ($item) use (&$urls, $frontendUrl) {
             $urls[] = [
                 'loc' => $frontendUrl . '/blog/' . $item->slug,
                 'lastmod' => $item->updated_at->toAtomString(),
@@ -34,7 +34,7 @@ class SitemapController extends Controller
         });
 
         // Динамические страницы - Проекты
-        Project::all()->each(function ($item) use (&$urls, $frontendUrl) {
+        $this->sitemapItems(Project::class)->each(function ($item) use (&$urls, $frontendUrl) {
             $urls[] = [
                 'loc' => $frontendUrl . '/projects/' . $item->slug,
                 'lastmod' => $item->updated_at->toAtomString(),
@@ -43,7 +43,7 @@ class SitemapController extends Controller
         });
 
         // Динамические страницы - Услуги
-        Service::all()->each(function ($item) use (&$urls, $frontendUrl) {
+        $this->sitemapItems(Service::class)->each(function ($item) use (&$urls, $frontendUrl) {
             $urls[] = [
                 'loc' => $frontendUrl . '/services/' . $item->slug,
                 'lastmod' => $item->updated_at->toAtomString(),
@@ -52,7 +52,7 @@ class SitemapController extends Controller
         });
 
         // Динамические страницы - Конференции
-        Conference::all()->each(function ($item) use (&$urls, $frontendUrl) {
+        $this->sitemapItems(Conference::class)->each(function ($item) use (&$urls, $frontendUrl) {
             $urls[] = [
                 'loc' => $frontendUrl . '/conferences/' . $item->slug,
                 'lastmod' => $item->updated_at->toAtomString(),
@@ -61,7 +61,7 @@ class SitemapController extends Controller
         });
 
         // Динамические страницы - Executions (если есть такие страницы на фронте)
-        Execution::all()->each(function ($item) use (&$urls, $frontendUrl) {
+        $this->sitemapItems(Execution::class)->each(function ($item) use (&$urls, $frontendUrl) {
             $urls[] = [
                 'loc' => $frontendUrl . '/executions/' . $item->slug,
                 'lastmod' => $item->updated_at->toAtomString(),
@@ -70,5 +70,17 @@ class SitemapController extends Controller
         });
 
         return response()->view('sitemap', compact('urls'))->header('Content-Type', 'text/xml');
+    }
+
+    private function sitemapItems(string $modelClass)
+    {
+        return $modelClass::query()
+            ->where(function ($query) {
+                $query->whereDoesntHave('seo')
+                    ->orWhereHas('seo', fn ($seoQuery) => $seoQuery
+                        ->where('robots_index', true)
+                        ->where('include_in_sitemap', true));
+            })
+            ->get();
     }
 }

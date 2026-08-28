@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Forms\SeoSection;
 use App\Filament\Resources\ExecutionResource\Pages;
 use App\Models\Execution;
 use Filament\Forms;
@@ -50,7 +51,8 @@ class ExecutionResource extends Resource
 
                         Forms\Components\Textarea::make('description')
                             ->columnSpanFull(),
-                    ])
+                    ]),
+                SeoSection::make()->columnSpanFull(),
             ]);
     }
 

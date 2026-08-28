@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Forms\SeoSection;
 use App\Filament\Resources\ServiceResource\Pages;
 use App\Filament\Resources\ServiceResource\RelationManagers;
 use App\Models\Service;
@@ -39,6 +40,7 @@ class ServiceResource extends Resource
                     ->columnSpanFull(),
                 Forms\Components\FileUpload::make('image')->disk('public')
                     ->image(),
+                SeoSection::make()->columnSpanFull(),
             ]);
     }
 
