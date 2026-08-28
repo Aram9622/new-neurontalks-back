@@ -23,8 +23,8 @@ class CustomerStatsOverview extends BaseWidget
                 ->description('Submitted audit requests')
                 ->descriptionIcon('heroicon-m-document-magnifying-glass')
                 ->color('warning'),
-            Stat::make('Visits', IpLog::query()->count())
-                ->description('Logged API requests')
+            Stat::make('Unique visitors', IpLog::query()->distinct()->count('ip_address'))
+                ->description('Unique IP addresses')
                 ->descriptionIcon('heroicon-m-globe-alt')
                 ->color('info'),
         ];
