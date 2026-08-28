@@ -3,18 +3,22 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Api\Concerns\PreparesSeo;
 use App\Models\Conference;
 use Illuminate\Http\Request;
 
 class ConferenceController extends Controller
 {
+    use PreparesSeo;
+
     // Список всех конференций
     public function index()
     {
-        $conferences = Conference::latest()->paginate(10);
+        $conferences = Conference::with('seo')->latest()->paginate(10);
 
         $conferences->getCollection()->transform(function($conf) {
             $conf->main_image = $conf->main_image ? asset('/storage/' . $conf->main_image) : null;
+            $this->prepareSeo($conf);
             return $conf;
         });
 
@@ -24,12 +28,13 @@ class ConferenceController extends Controller
     // Одна конференция со всеми деталями по slug
     public function show($slug)
     {
-        $conference = Conference::with(['speakers', 'partners', 'agendas', 'sections'])
+        $conference = Conference::with(['speakers', 'partners', 'agendas', 'sections', 'seo'])
             ->where('slug', $slug)
             ->firstOrFail();
 
         // Преобразуем изображения в полные URL
         $conference->main_image = $conference->main_image ? asset('/storage/' . $conference->main_image) : null;
+        $this->prepareSeo($conference);
 
         $conference->speakers->transform(function($speaker) {
             $speaker->image = $speaker->image ? asset('/storage/' . $speaker->image) : null;

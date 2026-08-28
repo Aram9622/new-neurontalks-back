@@ -15,6 +15,10 @@ class Kernel extends ConsoleKernel
         $schedule->command('newsletter:send')
             ->monthlyOn(1, '09:00')
             ->withoutOverlapping();
+
+        $schedule->command('sitemap:generate')
+            ->daily()
+            ->withoutOverlapping();
     }
 
     /**

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Forms\SeoSection;
 use App\Filament\Resources\ConferenceResource\Pages;
 use App\Models\Conference;
 use Filament\Forms;
@@ -96,6 +97,10 @@ class ConferenceResource extends Resource
                                     ->relationship('partners', 'name')
                                     ->multiple()
                                     ->preload(),
+                            ]),
+                        Forms\Components\Tabs\Tab::make('SEO')
+                            ->schema([
+                                SeoSection::make(),
                             ]),
                     ])->columnSpanFull(),
             ]);

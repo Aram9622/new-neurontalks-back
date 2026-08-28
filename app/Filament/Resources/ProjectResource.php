@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Forms\SeoSection;
 use App\Filament\Resources\ProjectResource\Pages;
 use App\Models\Project;
 use Filament\Forms;
@@ -70,6 +71,7 @@ class ProjectResource extends Resource
 
                 Forms\Components\Textarea::make('description')
                     ->columnSpanFull(),
+                SeoSection::make()->columnSpanFull(),
             ]);
     }
 
