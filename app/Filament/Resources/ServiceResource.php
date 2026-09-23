@@ -40,6 +40,9 @@ class ServiceResource extends Resource
                     ->columnSpanFull(),
                 Forms\Components\FileUpload::make('image')->disk('public')
                     ->image(),
+                Forms\Components\ColorPicker::make('service_color')
+                    ->label('Service Color')
+                    ->placeholder('#000000'),
                 SeoSection::make()->columnSpanFull(),
             ]);
     }
@@ -53,6 +56,8 @@ class ServiceResource extends Resource
                 Tables\Columns\TextColumn::make('slug')
                     ->searchable(),
                 Tables\Columns\ImageColumn::make('image')->disk('public'),
+                Tables\Columns\ColorColumn::make('service_color')
+                    ->label('Color'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
