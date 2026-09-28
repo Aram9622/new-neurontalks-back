@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Api\Concerns\PreparesSeo;
 use App\Models\Service;
-use Illuminate\Http\Request;
 
 class ServiceController extends Controller
 {
@@ -14,7 +13,10 @@ class ServiceController extends Controller
     // List all services
     public function index()
     {
-        $services = Service::with('seo')->latest()->paginate(10);
+        $services = Service::with('seo')
+            ->orderBy('order')
+            ->orderBy('id')
+            ->paginate(10);
 
         // Map full image URLs
         $services->getCollection()->transform(function ($service) {

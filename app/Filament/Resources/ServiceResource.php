@@ -43,6 +43,11 @@ class ServiceResource extends Resource
                 Forms\Components\ColorPicker::make('service_color')
                     ->label('Service Color')
                     ->placeholder('#000000'),
+                Forms\Components\TextInput::make('order')
+                    ->numeric()
+                    ->minValue(0)
+                    ->default(0)
+                    ->required(),
                 SeoSection::make()->columnSpanFull(),
             ]);
     }
@@ -58,6 +63,8 @@ class ServiceResource extends Resource
                 Tables\Columns\ImageColumn::make('image')->disk('public'),
                 Tables\Columns\ColorColumn::make('service_color')
                     ->label('Color'),
+                Tables\Columns\TextColumn::make('order')
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -67,6 +74,7 @@ class ServiceResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
+            ->defaultSort('order')
             ->filters([
                 //
             ])
