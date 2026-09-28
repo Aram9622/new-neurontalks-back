@@ -28,4 +28,25 @@ class ServiceApiTest extends TestCase
             ->assertJsonPath('id', $service->id)
             ->assertJsonPath('service_color', '#ff9900');
     }
+
+    public function test_services_are_returned_in_configured_order(): void
+    {
+        $lastService = Service::create([
+            'title' => 'Last service',
+            'slug' => 'last-service',
+            'order' => 20,
+        ]);
+        $firstService = Service::create([
+            'title' => 'First service',
+            'slug' => 'first-service',
+            'order' => 10,
+        ]);
+
+        $this->getJson('/api/services')
+            ->assertOk()
+            ->assertJsonPath('data.0.id', $firstService->id)
+            ->assertJsonPath('data.0.order', 10)
+            ->assertJsonPath('data.1.id', $lastService->id)
+            ->assertJsonPath('data.1.order', 20);
+    }
 }

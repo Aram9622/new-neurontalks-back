@@ -33,7 +33,11 @@ class HomeController extends Controller
                     $relatedData = Project::inRandomOrder()->limit(4)->get();
                     break;
                 case 'Service':
-                    $relatedData = Service::query()->limit(4)->get();
+                    $relatedData = Service::query()
+                        ->orderBy('order')
+                        ->orderBy('id')
+                        ->limit(4)
+                        ->get();
                     break;
                 case 'Blog':
                     $relatedData = Blog::inRandomOrder()->limit(4)->get();
